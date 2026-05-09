@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Countdown Planner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="animation style.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-feature-settings: "ss01";
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at top left, rgba(99, 81, 255, 0.18), transparent 28%),
+                        radial-gradient(circle at top right, rgba(234, 34, 97, 0.18), transparent 30%),
+                        linear-gradient(180deg, #101a33 0%, #0c1226 45%, #090d1d 100%);
+            color: #f8fafc;
+            line-height: 1.4;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px 48px;
+        }
+        h1 {
+            font-size: 56px;
+            font-weight: 300;
+            letter-spacing: -1.4px;
+            line-height: 1.03;
+            text-align: center;
+            color: #ffffff;
+            margin: 72px 0 32px 0;
+        }
+        form {
+            background-color: rgba(255, 255, 255, 0.06);
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: rgba(8, 18, 49, 0.24) 0 8px 24px, rgba(8, 18, 49, 0.08) 0 2px 6px;
+            margin-bottom: 32px;
+            border: 1px solid rgba(229, 236, 255, 0.12);
+            backdrop-filter: blur(12px);
+        }
+        label {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 8px;
+            color: #d9e1ff;
+        }
+        input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid rgba(168, 195, 222, 0.28);
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 300;
+            margin-bottom: 14px;
+            background-color: rgba(255, 255, 255, 0.06);
+            color: #f8fafc;
+        }
+        input[type="text"]::placeholder,
+        input[type="date"]::placeholder {
+            color: rgba(248, 250, 252, 0.6);
+        }
+        input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        button {
+            background-color: #6673ff;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 16px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        button:hover {
+            background-color: #4d55f5;
+        }
+        .hero {
+            display: grid;
+            gap: 32px;
+            margin-bottom: 32px;
+            padding: 32px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(229, 236, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: rgba(8, 18, 49, 0.16) 0 6px 18px, rgba(8, 18, 49, 0.08) 0 2px 6px;
+            backdrop-filter: blur(12px);
+        }
+        .hero-content {
+            max-width: 760px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .hero-content p {
+            color: #d9e1ff;
+            font-size: 17px;
+            line-height: 1.7;
+            margin: 0;
+        }
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+        .hero-actions button {
+            min-width: 160px;
+        }
+        .feature-cards {
+            display: grid;
+            gap: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(229, 236, 255, 0.12);
+            border-radius: 16px;
+            padding: 22px;
+        }
+        .feature-card h2 {
+            margin: 0 0 12px 0;
+            font-size: 20px;
+            color: #ffffff;
+        }
+        .feature-card p {
+            margin: 0 0 18px 0;
+            color: #d9e1ff;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+        .feature-detail {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(229, 236, 255, 0.12);
+            border-radius: 16px;
+            padding: 24px;
+        }
+        .feature-detail h3 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            color: #ffffff;
+        }
+        .feature-detail p {
+            margin: 0;
+            color: #d9e1ff;
+            line-height: 1.7;
+        }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(1, 11, 29, 0.78);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-panel {
+            width: 100%;
+            max-width: 520px;
+            background: rgba(6, 14, 36, 0.98);
+            border: 1px solid rgba(229, 236, 255, 0.16);
+            border-radius: 24px;
+            box-shadow: rgba(8, 18, 49, 0.28) 0 20px 40px, rgba(8, 18, 49, 0.12) 0 6px 16px;
+            padding: 28px;
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 38px;
+            height: 38px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+        }
+        .auth-tabs {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 9999px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(229, 236, 255, 0.12);
+        }
+        .auth-tab {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.75);
+            padding: 10px 20px;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .auth-tab.active {
+            background-color: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+        }
+        .auth-panel {
+            display: none;
+        }
+        .auth-panel.active {
+            display: block;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .welcome-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(229, 236, 255, 0.12);
+            border-radius: 16px;
+            padding: 22px 24px;
+            margin-bottom: 32px;
+        }
+        .welcome-banner p {
+            margin: 0;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 300;
+        }
+        .assignment-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        .assignment {
+            background-color: rgba(255, 255, 255, 0.06);
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: rgba(8, 18, 49, 0.18) 0 8px 24px, rgba(8, 18, 49, 0.08) 0 2px 6px;
+            border: 1px solid rgba(229, 236, 255, 0.1);
+        }
+        .assignment h3 {
+            font-size: 22px;
+            font-weight: 300;
+            letter-spacing: -0.22px;
+            line-height: 1.1;
+            margin: 0 0 10px 0;
+            color: #ffffff;
+        }
+        .assignment p {
+            margin: 6px 0;
+            font-size: 15px;
+            color: #d9e1ff;
+        }
+        .countdown {
+            font-size: 18px;
+            font-weight: 400;
+            margin: 8px 0;
+            color: #ffffff;
+        }
+        .urgent {
+            color: #ff5b99;
+        }
+        .warning {
+            color: #f7b267;
+        }
+        .normal {
+            color: #b8c3ff;
+        }
+        .assignment button {
+            margin-right: 8px;
+            margin-top: 12px;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: 400;
+            background-color: rgba(255, 255, 255, 0.06);
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .assignment button:hover {
+            background-color: rgba(255, 255, 255, 0.12);
+        }
+        .assignment button:last-child {
+            margin-right: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Assignment Countdown Planner</h1>
+
+        <section class="hero" id="home-section">
+            <div class="hero-content">
+                <p class="eyebrow">Your planning home</p>
+                <h2>Turn deadlines into calm clarity.</h2>
+                <p>Welcome to a planner designed for students who want to stay ahead of assignments, keep reminders organized, and avoid last-minute stress.</p>
+            </div>
+            <div class="hero-actions">
+                <button type="button" data-auth-mode="signup">Sign up</button>
+                <button type="button" data-auth-mode="login">Log in</button>
+            </div>
+            <div class="feature-cards">
+                <article class="feature-card">
+                    <h2>Deadline tracker</h2>
+                    <p>See everything that is due soon in one intelligent view so you can prioritize the tasks that matter most.</p>
+                    <button type="button" data-feature="deadline">View detail</button>
+                </article>
+                <article class="feature-card">
+                    <h2>Reminder timeline</h2>
+                    <p>Set reminders for each assignment and stay in control with notification-ready planning.</p>
+                    <button type="button" data-feature="reminder">View detail</button>
+                </article>
+                <article class="feature-card">
+                    <h2>Progress focus</h2>
+                    <p>Mark work complete, watch your progress, and keep attention on what still needs to be done.</p>
+                    <button type="button" data-feature="progress">View detail</button>
+                </article>
+            </div>
+            <section class="feature-detail" id="feature-detail">
+                <h3 id="feature-title">Pick a feature</h3>
+                <p id="feature-description">Tap any feature button to read its assigned description and see how the planner helps you stay organized.</p>
+            </section>
+        </section>
+
+        <div class="modal-overlay hidden" id="auth-modal">
+            <div class="modal-panel">
+                <button type="button" class="modal-close" id="auth-close">×</button>
+                <div class="auth-tabs" role="tablist">
+                    <button type="button" class="auth-tab active" data-mode="login">Log in</button>
+                    <button type="button" class="auth-tab" data-mode="signup">Sign up</button>
+                </div>
+
+                <div class="auth-panel active" id="login-panel">
+                    <form id="login-form">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" placeholder="name@school.edu" required>
+
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter password" required>
+
+                        <button type="submit">Log in</button>
+                    </form>
+                </div>
+
+                <div class="auth-panel" id="signup-panel">
+                    <form id="signup-form">
+                        <label for="signup-name">Your Name</label>
+                        <input type="text" id="signup-name" placeholder="First and last name" required>
+
+                        <label for="signup-email">Email</label>
+                        <input type="email" id="signup-email" placeholder="name@school.edu" required>
+
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" placeholder="Create password" required>
+
+                        <button type="submit">Create account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <section class="welcome-banner hidden" id="welcome-banner">
+            <p>Welcome back, <strong id="user-name"></strong>!</p>
+            <button type="button" id="logout-button">Log out</button>
+        </section>
+
+        <section class="assignment-section hidden" id="assignment-section">
+            <form id="assignment-form">
+                <label for="assignment-name">Assignment Name</label>
+                <input type="text" id="assignment-name" placeholder="Enter assignment name" required>
+
+                <label for="due-date">Due Date</label>
+                <input type="date" id="due-date" required>
+
+                <label><input type="checkbox" id="set-reminder"> Set Reminder</label>
+
+                <button type="submit">Add Assignment</button>
+            </form>
+
+            <div class="assignment-list" id="assignment-list">
+                <!-- Assignments will be displayed here -->
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const form = document.getElementById('assignment-form');
+        const homeSection = document.getElementById('home-section');
+        const assignmentSection = document.getElementById('assignment-section');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const welcomeBanner = document.getElementById('welcome-banner');
+        const userNameSpan = document.getElementById('user-name');
+        const logoutButton = document.getElementById('logout-button');
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const loginPanel = document.getElementById('login-panel');
+        const signupPanel = document.getElementById('signup-panel');
+        const assignmentList = document.getElementById('assignment-list');
+        const authModal = document.getElementById('auth-modal');
+        const authClose = document.getElementById('auth-close');
+        const authButtons = document.querySelectorAll('[data-auth-mode]');
+        const featureButtons = document.querySelectorAll('[data-feature]');
+        const featureTitle = document.getElementById('feature-title');
+        const featureDescription = document.getElementById('feature-description');
+
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let assignments = JSON.parse(localStorage.getItem('assignments')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+
+        const features = {
+            deadline: {
+                title: 'Deadline tracker',
+                description: 'A dedicated deadline tracker keeps every due date visible so you can prioritize the work that matters most and avoid last-minute rushes.'
+            },
+            reminder: {
+                title: 'Reminder timeline',
+                description: 'Set reminders for each assignment and stay on top of your schedule with notification-ready checkpoints before every deadline.'
+            },
+            progress: {
+                title: 'Progress focus',
+                description: 'Mark tasks complete, monitor your momentum, and keep attention on the most urgent assignments until everything is finished.'
+            }
+        };
+
+        function saveUsers() {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        function saveCurrentUser() {
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        }
+
+        function saveAssignments() {
+            localStorage.setItem('assignments', JSON.stringify(assignments));
+        }
+
+        function setAuthMode(mode) {
+            authTabs.forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.mode === mode);
+            });
+            loginPanel.classList.toggle('active', mode === 'login');
+            signupPanel.classList.toggle('active', mode === 'signup');
+        }
+
+        function openAuthModal(mode) {
+            setAuthMode(mode);
+            authModal.classList.add('active');
+            authModal.classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            authModal.classList.remove('active');
+            authModal.classList.add('hidden');
+        }
+
+        function updateAuthState() {
+            const signedIn = Boolean(currentUser);
+            welcomeBanner.classList.toggle('hidden', !signedIn);
+            assignmentSection.classList.toggle('hidden', !signedIn);
+            homeSection.classList.toggle('hidden', signedIn);
+
+            if (signedIn) {
+                userNameSpan.textContent = currentUser.name;
+                closeAuthModal();
+                displayAssignments();
+            }
+        }
+
+        function findUserByEmail(email) {
+            return users.find(user => user.email.toLowerCase() === email.toLowerCase());
+        }
+
+        function loginUser(email, password) {
+            const user = findUserByEmail(email);
+            if (user && user.password === password) {
+                currentUser = user;
+                saveCurrentUser();
+                updateAuthState();
+                displayAssignments();
+                return true;
+            }
+            return false;
+        }
+
+        function signupUser(name, email, password) {
+            if (findUserByEmail(email)) {
+                return false;
+            }
+            const newUser = {
+                id: Date.now(),
+                name,
+                email,
+                password
+            };
+            users.push(newUser);
+            saveUsers();
+            currentUser = newUser;
+            saveCurrentUser();
+            updateAuthState();
+            displayAssignments();
+            return true;
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            saveCurrentUser();
+            updateAuthState();
+        }
+
+        function calculateDaysLeft(dueDate) {
+            const now = new Date();
+            const due = new Date(dueDate);
+            const diffTime = due - now;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        function getUrgencyClass(daysLeft) {
+            if (daysLeft < 0) return 'urgent';
+            if (daysLeft <= 3) return 'urgent';
+            if (daysLeft <= 7) return 'warning';
+            return 'normal';
+        }
+
+        function getCurrentUserAssignments() {
+            if (!currentUser) return [];
+            return assignments
+                .filter(a => a.userId === currentUser.id && !a.completed)
+                .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+        }
+
+        function displayAssignments() {
+            assignmentList.innerHTML = '';
+            const userAssignments = getCurrentUserAssignments();
+
+            if (userAssignments.length === 0) {
+                assignmentList.innerHTML = '<p style="color: rgba(248, 250, 252, 0.7);">No assignments yet. Add one to start your countdown.</p>';
+                return;
+            }
+
+            userAssignments.forEach(assignment => {
+                const daysLeft = calculateDaysLeft(assignment.dueDate);
+                const urgencyClass = getUrgencyClass(daysLeft);
+
+                const assignmentDiv = document.createElement('div');
+                assignmentDiv.className = 'assignment';
+                assignmentDiv.innerHTML = `
+                    <h3>${assignment.name}</h3>
+                    <p>Due: ${new Date(assignment.dueDate).toLocaleDateString()}</p>
+                    <p class="countdown ${urgencyClass}">Days left: ${daysLeft}</p>
+                    <p>Reminder: ${assignment.reminder ? 'Yes' : 'No'}</p>
+                    <button onclick="editAssignment(${assignment.id})">Edit</button>
+                    <button onclick="completeAssignment(${assignment.id})">Mark Complete</button>
+                    <button onclick="deleteAssignment(${assignment.id})">Delete</button>
+                `;
+                assignmentList.appendChild(assignmentDiv);
+            });
+        }
+
+        function deleteAssignment(id) {
+            assignments = assignments.filter(a => a.id !== id);
+            saveAssignments();
+            displayAssignments();
+        }
+
+        function editAssignment(id) {
+            const assignment = assignments.find(a => a.id === id);
+            if (!assignment) return;
+            const newName = prompt('Edit Assignment Name:', assignment.name);
+            const newDate = prompt('Edit Due Date (YYYY-MM-DD):', assignment.dueDate);
+            const newReminder = confirm('Set Reminder? ' + (assignment.reminder ? '(Currently Yes)' : '(Currently No)'));
+            if (newName && newDate) {
+                assignment.name = newName;
+                assignment.dueDate = newDate;
+                assignment.reminder = newReminder;
+                saveAssignments();
+                displayAssignments();
+            }
+        }
+
+        function completeAssignment(id) {
+            const assignment = assignments.find(a => a.id === id);
+            if (assignment) {
+                assignment.completed = true;
+                saveAssignments();
+                displayAssignments();
+            }
+        }
+
+        function checkReminders() {
+            if (!currentUser) return;
+            assignments.forEach(assignment => {
+                if (assignment.userId !== currentUser.id) return;
+                if (assignment.reminder && !assignment.notified && !assignment.completed) {
+                    const daysLeft = calculateDaysLeft(assignment.dueDate);
+                    if (daysLeft <= 7 && daysLeft > 0) {
+                        if (Notification.permission === 'granted') {
+                            new Notification(`Reminder: ${assignment.name} due in ${daysLeft} days`);
+                            assignment.notified = true;
+                        }
+                    }
+                }
+            });
+            saveAssignments();
+        }
+
+        function showMessage(message) {
+            alert(message);
+        }
+
+        function showFeatureDetail(feature) {
+            if (!features[feature]) return;
+            featureTitle.textContent = features[feature].title;
+            featureDescription.textContent = features[feature].description;
+            document.getElementById('feature-detail').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        authButtons.forEach(button => {
+            button.addEventListener('click', () => openAuthModal(button.dataset.authMode));
+        });
+
+        authClose.addEventListener('click', closeAuthModal);
+        authModal.addEventListener('click', (event) => {
+            if (event.target === authModal) {
+                closeAuthModal();
+            }
+        });
+
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', () => setAuthMode(tab.dataset.mode));
+        });
+
+        featureButtons.forEach(button => {
+            button.addEventListener('click', () => showFeatureDetail(button.dataset.feature));
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            if (!loginUser(email, password)) {
+                showMessage('Invalid login. Check your email and password.');
+            } else {
+                loginForm.reset();
+            }
+        });
+
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+
+            if (!signupUser(name, email, password)) {
+                showMessage('An account with that email already exists.');
+            } else {
+                signupForm.reset();
+            }
+        });
+
+        logoutButton.addEventListener('click', () => {
+            logoutUser();
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!currentUser) {
+                showMessage('Please log in before adding assignments.');
+                return;
+            }
+            const name = document.getElementById('assignment-name').value.trim();
+            const dueDate = document.getElementById('due-date').value;
+            const reminder = document.getElementById('set-reminder').checked;
+            const newAssignment = {
+                id: Date.now(),
+                userId: currentUser.id,
+                name,
+                dueDate,
+                reminder,
+                completed: false,
+                notified: false
+            };
+            assignments.push(newAssignment);
+            saveAssignments();
+            displayAssignments();
+            form.reset();
+        });
+
+        if ('Notification' in window) {
+            Notification.requestPermission();
+        }
+
+        updateAuthState();
+        displayAssignments();
+        setInterval(displayAssignments, 60000);
+        setInterval(checkReminders, 3600000);
+        checkReminders();
+    </script>
+</body>
+</html>
