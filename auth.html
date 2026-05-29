@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Assignment Countdown Planner — Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#ffffff;--text:#111827;--muted:#6b7280;--accent:#111827;--card-border:rgba(0,0,0,0.06);--success:#10b981}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:#ffffff;color:var(--text);min-height:100vh}
+    .wrap{max-width:1100px;margin:18px auto;padding:14px}
+    header{display:flex;justify-content:space-between;align-items:center;padding:18px 6px;border-bottom:1px solid rgba(0,0,0,0.04);margin-bottom:14px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:36px;height:36px;border-radius:2px;background:transparent;color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700}
+    .top-actions{display:flex;gap:10px;align-items:center}
+    .btn{padding:10px 14px;border-radius:6px;border:none;background:var(--accent);color:#fff;cursor:pointer;transition:transform .18s ease,filter .18s ease}
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.05)}
+    .secondary{background:transparent;color:var(--text);border:1px solid var(--card-border);transition:background .18s ease,border-color .18s ease,color .18s ease}
+    .secondary:hover{background:rgba(17,24,39,0.04);border-color:rgba(16,24,40,0.1)}
+    .grid{display:grid;grid-template-columns:360px 1fr;gap:20px}
+    .panel{background:#fff;border-radius:8px;padding:20px;border:1px solid var(--card-border);box-shadow:0 10px 24px rgba(16,24,40,0.04);opacity:0;transform:translateY(18px);animation:fadeUp .6s ease-out forwards}
+    .panel:nth-child(2){animation-delay:0.08s}
+    h2{margin:0 0 12px;font-weight:600}
+    .tabs{display:flex;gap:8px;margin-bottom:20px}
+    .tab{flex:1;padding:12px;border-radius:8px;background:transparent;border:1px solid transparent;color:var(--muted);cursor:pointer;font-weight:600;transition:all .18s ease}
+    .tab:hover{background:rgba(17,24,39,0.04);color:var(--text)}
+    .tab.active{background:#fff;border-bottom:2px solid var(--accent);color:var(--text)}
+    form{display:grid;gap:14px}
+    label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+    input[type=text],input[type=email],input[type=password]{width:100%;padding:14px;border-radius:8px;border:1px solid var(--card-border);background:transparent;color:var(--text);outline:none;transition:box-shadow .18s,border-color .18s}
+    input:focus{box-shadow:0 10px 28px rgba(16,24,40,0.08);border-color:rgba(16,24,40,0.14)}
+    .muted{color:var(--muted);font-size:13px}
+    .feature-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .feature-card{border:1px solid var(--card-border);border-radius:10px;padding:18px;transition:transform .22s ease,box-shadow .22s ease,background .22s ease;opacity:0;transform:translateY(14px);animation:fadeUp .5s ease-out forwards}
+    .feature-card:nth-child(1){animation-delay:0.18s}
+    .feature-card:nth-child(2){animation-delay:0.24s}
+    .feature-card:nth-child(3){animation-delay:0.3s}
+    .feature-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(16,24,40,0.08);background:rgba(248,250,252,0.8)}
+    .feature-card strong{display:block;margin-bottom:8px;font-size:16px}
+    .feature-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.7}
+    .notice{background:#f8faf8;padding:12px;border-radius:8px;border:1px solid rgba(0,0,0,0.04);margin-bottom:12px;color:var(--muted)}
+    .toast{position:fixed;right:18px;top:18px;background:#f0fdf4;color:var(--success);border:1px solid rgba(16,185,129,0.12);padding:12px 16px;border-radius:6px;box-shadow:0 6px 24px rgba(16,24,40,0.06);opacity:0;transform:translateY(-10px);transition:opacity .18s ease,transform .18s ease}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+    @media (max-width:920px){.grid{grid-template-columns:1fr}.wrap{padding:12px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand"><div class="logo">AC</div><div><div style="font-size:14px;font-weight:600">Assignment Countdown Planner</div><div style="font-size:13px;color:var(--muted)">Login or sign up to start planning</div></div></div>
+      <div class="top-actions"><button class="secondary" onclick="location.href='index.html'">Back to Home</button></div>
+    </header>
+
+    <div class="grid">
+      <aside class="panel fade-in">
+        <h2 id="auth-title">Welcome</h2>
+        <div class="tabs">
+          <button class="tab active" data-mode="login">Log in</button>
+          <button class="tab" data-mode="signup">Sign up</button>
+        </div>
+
+        <div id="login-panel">
+          <form id="login-form">
+            <label for="login-email">Email</label>
+            <input id="login-email" type="email" required placeholder="name@school.edu">
+            <label for="login-password">Password</label>
+            <input id="login-password" type="password" required placeholder="Password">
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px"><button class="btn" type="submit">Log in</button><button type="button" class="secondary" id="demoBtn">Demo user</button></div>
+          </form>
+        </div>
+
+        <div id="signup-panel" style="display:none">
+          <form id="signup-form">
+            <label for="signup-name">Full name</label>
+            <input id="signup-name" type="text" required placeholder="First Last">
+            <label for="signup-email">Email</label>
+            <input id="signup-email" type="email" required placeholder="name@school.edu">
+            <label for="signup-password">Password</label>
+            <input id="signup-password" type="password" required placeholder="Choose a password">
+            <button class="btn" type="submit">Create account</button>
+          </form>
+        </div>
+
+        <div style="margin-top:16px" class="muted">Your account data is saved locally in your browser. Use the same email to log back into your dashboard.</div>
+      </aside>
+
+      <section class="panel fade-in">
+        <div class="notice">Select login or sign up, then continue to your dashboard to manage assignments and deadlines.</div>
+        <div class="feature-cards">
+          <div class="feature-card"><strong>Deadline tracker</strong><p>See every due date in a clean list so you can plan your study sessions with confidence.</p></div>
+          <div class="feature-card"><strong>Reminder timeline</strong><p>Set reminders for your most important assignments and keep yourself on track.</p></div>
+          <div class="feature-card"><strong>Progress focus</strong><p>Mark tasks complete and stay focused on what matters most each week.</p></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const loginPanel = document.getElementById('login-panel');
+    const signupPanel = document.getElementById('signup-panel');
+    const authTitle = document.getElementById('auth-title');
+
+    tabs.forEach(tab => tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.toggle('active', t === tab));
+      const mode = tab.dataset.mode;
+      loginPanel.style.display = mode === 'login' ? '' : 'none';
+      signupPanel.style.display = mode === 'signup' ? '' : 'none';
+      authTitle.textContent = mode === 'login' ? 'Welcome back' : 'Create account';
+    }));
+
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+
+    if(currentUser){
+      location.href = 'dashboard.html';
+    }
+
+    function saveUsers(){localStorage.setItem('users', JSON.stringify(users))}
+    function saveCurrentUser(){localStorage.setItem('currentUser', JSON.stringify(currentUser))}
+    function findUserByEmail(email){return users.find(user => user.email.toLowerCase() === email.toLowerCase())}
+
+    function showToast(message){
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+      });
+      setTimeout(() => {toast.style.opacity = '0';toast.style.transform = 'translateY(-6px)';}, 2600);
+      setTimeout(() => toast.remove(), 3200);
+    }
+
+    function loginUser(email, password){
+      const user = findUserByEmail(email);
+      if(user && user.password === password){
+        currentUser = user;
+        saveCurrentUser();
+        return true;
+      }
+      return false;
+    }
+
+    function signupUser(name, email, password){
+      if(findUserByEmail(email)) return false;
+      const newUser = {id: Date.now(), name, email, password};
+      users.push(newUser);
+      saveUsers();
+      currentUser = newUser;
+      saveCurrentUser();
+      return true;
+    }
+
+    document.getElementById('login-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      if(!loginUser(email, password)){
+        showToast('Invalid login. Check your email and password.');
+        return;
+      }
+      showToast('Logged in successfully!');
+      setTimeout(() => location.href = 'dashboard.html', 400);
+    });
+
+    document.getElementById('signup-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('signup-name').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      if(!signupUser(name, email, password)){
+        showToast('An account with that email already exists.');
+        return;
+      }
+      showToast('Account created! Redirecting to dashboard...');
+      setTimeout(() => location.href = 'dashboard.html', 400);
+    });
+
+    document.getElementById('demoBtn').addEventListener('click', () => {
+      const demo = {id: 999999, name: 'Demo Student', email: 'demo@local', password: 'demo'};
+      if(!findUserByEmail(demo.email)){
+        users.push(demo);
+        saveUsers();
+      }
+      currentUser = demo;
+      saveCurrentUser();
+      showToast('Signed in as Demo user');
+      setTimeout(() => location.href = 'dashboard.html', 400);
+    });
+  </script>
+</body>
+</html>

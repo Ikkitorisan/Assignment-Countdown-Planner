@@ -5,15 +5,14 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-// PostgreSQL connection
 const pool = new Pool({
-  user: 'your_username',
-  host: 'localhost',
-  database: 'assignment_planner',
-  password: 'your_password',
-  port: 5432,
+  user: process.env.PGUSER,
+  host: process.env.PGHOST,
+  database: process.env.PGDATABASE,
+  password: process.env.PGPASSWORD,
+  port: process.env.PGPORT || 5432,
 });
 
 app.use(cors());

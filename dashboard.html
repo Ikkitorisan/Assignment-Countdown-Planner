@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Assignment Countdown Planner — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#ffffff;--text:#111827;--muted:#6b7280;--accent:#111827;--card-border:rgba(0,0,0,0.06);--success:#10b981;--warning:#f59e0b;--danger:#ef4444}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:#ffffff;color:var(--text);min-height:100vh}
+    .wrap{max-width:1200px;margin:18px auto;padding:14px}
+    header{display:flex;justify-content:space-between;align-items:center;padding:18px 6px;border-bottom:1px solid rgba(0,0,0,0.04);margin-bottom:10px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:36px;height:36px;border-radius:2px;background:transparent;color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700}
+    .top-actions{display:flex;gap:10px;align-items:center}
+    .btn{padding:10px 14px;border-radius:6px;border:none;background:var(--accent);color:#fff;cursor:pointer}
+    .secondary{background:transparent;color:var(--text);border:1px solid var(--card-border)}
+    .content{display:grid;gap:20px}
+    .panel{background:#fff;border-radius:8px;padding:22px;border:1px solid var(--card-border);box-shadow:0 8px 30px rgba(16,24,40,0.04);opacity:0;transform:translateY(14px);animation:fadeUp .6s ease-out forwards}
+    .welcome{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .welcome h2{margin:0;font-size:24px}
+    .welcome p{margin:6px 0 0;color:var(--muted)}
+    .form-grid{display:grid;grid-template-columns:1fr 180px;gap:16px;align-items:end}
+    .field{display:flex;flex-direction:column;gap:8px}
+    label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+    input[type=text],input[type=date]{width:100%;padding:14px;border-radius:8px;border:1px solid var(--card-border);background:transparent;color:var(--text);outline:none;transition:box-shadow .18s,border-color .18s}
+    input[type=text]:focus,input[type=date]:focus{box-shadow:0 10px 28px rgba(16,24,40,0.08);border-color:rgba(16,24,40,0.14)}
+    .assignments{display:grid;gap:16px;margin-top:12px}
+    .assignment{border:1px solid var(--card-border);border-radius:10px;padding:18px;display:grid;grid-template-columns:1fr 180px;gap:18px;align-items:center;opacity:0;transform:translateY(12px);animation:fadeUp .5s ease-out forwards}
+    .assignment:nth-child(1){animation-delay:0.12s}
+    .assignment:nth-child(2){animation-delay:0.18s}
+    .assignment:nth-child(3){animation-delay:0.24s}
+    .assignment-info{display:grid;gap:10px}
+    .assignment-title{margin:0;font-size:18px;font-weight:600}
+    .assignment-meta{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:13px}
+    .badge{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;text-transform:uppercase}
+    .badge.urgent{background:rgba(239,68,68,0.08);color:var(--danger)}
+    .badge.warning{background:rgba(245,158,11,0.12);color:var(--warning)}
+    .badge.normal{background:rgba(16,185,129,0.12);color:var(--success)}
+    .assignment-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+    .btn{padding:10px 14px;border-radius:8px;border:none;background:var(--accent);color:#fff;cursor:pointer;transition:transform .18s ease,filter .18s ease}
+    .btn:hover{transform:translateY(-1.5px);filter:brightness(1.05)}
+    .small{padding:10px 12px;border-radius:8px;border:1px solid var(--card-border);background:transparent;color:var(--text);cursor:pointer;transition:background .18s,border-color .18s}
+    .small:hover{background:rgba(17,24,39,0.04);border-color:rgba(16,24,40,0.1)}
+    .empty{color:var(--muted);padding:36px;text-align:center;border:1px dashed var(--card-border);border-radius:10px}
+    .toast{position:fixed;right:18px;top:18px;background:#f0fdf4;color:var(--success);border:1px solid rgba(16,185,129,0.12);padding:12px 16px;border-radius:6px;box-shadow:0 6px 24px rgba(16,24,40,0.06);opacity:0;transform:translateY(-10px);transition:opacity .18s ease,transform .18s ease}
+    @media (max-width:860px){.form-grid{grid-template-columns:1fr}.assignment{grid-template-columns:1fr}.top-actions{flex-direction:column;align-items:flex-start}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand"><div class="logo">AC</div><div><div style="font-size:14px;font-weight:600">Assignment Countdown Planner</div><div style="font-size:13px;color:var(--muted)">Your assignments dashboard</div></div></div>
+      <div class="top-actions"><button class="secondary" onclick="location.href='index.html'">Home</button><button class="secondary" id="logoutBtn">Log out</button></div>
+    </header>
+
+    <div class="content">
+      <section class="panel">
+        <div class="welcome">
+          <div>
+            <h2>Welcome back, <span id="dashboard-name">Student</span></h2>
+            <p>Track deadlines, add reminders, and keep your study plan moving.</p>
+          </div>
+          <div style="text-align:right;color:var(--muted);font-size:13px" id="dashboard-subtitle"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+          <div>
+            <h3 style="margin:0;font-size:20px">Add New Assignment</h3>
+            <p style="margin:6px 0 0;color:var(--muted);font-size:14px">Add a task and set a reminder so you can stay ahead.</p>
+          </div>
+        </div>
+
+        <form id="assignment-form" class="form-grid">
+          <div class="field"><label for="assignment-name">Assignment Name</label><input id="assignment-name" type="text" placeholder="Enter assignment name" required></div>
+          <div class="field"><label for="due-date">Due Date</label><input id="due-date" type="date" required></div>
+          <div class="field" style="grid-column:1/-1;display:flex;align-items:center;gap:14px">
+            <label style="display:flex;align-items:center;gap:8px;font-weight:500;color:var(--text)"><input type="checkbox" id="set-reminder"> Reminder</label>
+            <button class="btn" type="submit">+ Add</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+          <div><h3 style="margin:0;font-size:20px">Your Assignments</h3><p style="margin:6px 0 0;color:var(--muted);font-size:14px">Manage deadlines and mark tasks complete.</p></div>
+          <div style="color:var(--muted);font-size:13px" id="assignment-count"></div>
+        </div>
+        <div id="assignment-list" class="assignments"></div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    let assignments = JSON.parse(localStorage.getItem('assignments')) || [];
+    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+
+    function saveAssignments(){localStorage.setItem('assignments',JSON.stringify(assignments))}
+    function saveCurrentUser(){localStorage.setItem('currentUser',JSON.stringify(currentUser))}
+    function findUserByEmail(email){return users.find(u=>u.email.toLowerCase()===email.toLowerCase())}
+
+    if(!currentUser){location.href='auth.html';}
+
+    document.getElementById('dashboard-name').textContent = currentUser?.name || 'Student';
+    document.getElementById('dashboard-subtitle').textContent = currentUser?.email || '';
+
+    function showToast(message){
+      const t = document.createElement('div');
+      t.className = 'toast';
+      t.textContent = message;
+      document.body.appendChild(t);
+      requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateY(0)';});
+      setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(-6px)';},2600);
+      setTimeout(()=>t.remove(),3200);
+    }
+
+    function calculateDaysLeft(dueDate){const now=new Date();const due=new Date(dueDate);const diff=due-now;return Math.ceil(diff/(1000*60*60*24))}
+    function getUrgencyClass(days){if(days<0) return 'urgent'; if(days<=3) return 'urgent'; if(days<=7) return 'warning'; return 'normal'}
+
+    function displayAssignments(){
+      const list = assignments.filter(a=>a.userId===currentUser.id && !a.completed).sort((a,b)=>new Date(a.dueDate)-new Date(b.dueDate));
+      const container = document.getElementById('assignment-list');
+      container.innerHTML = '';
+      document.getElementById('assignment-count').textContent = `${list.length} active task${list.length===1?'':'s'}`;
+      if(list.length===0){container.innerHTML = '<div class="empty">No assignments yet. Add one to start your countdown.</div>';return}
+      list.forEach(a=>{
+        const days = calculateDaysLeft(a.dueDate);
+        const badgeClass = getUrgencyClass(days);
+        const badgeText = badgeClass === 'urgent' ? 'Urgent' : badgeClass === 'warning' ? 'Due soon' : 'On track';
+        const item = document.createElement('div');
+        item.className = 'assignment';
+        item.innerHTML = `
+          <div class="assignment-info">
+            <p class="assignment-title">${a.name}</p>
+            <div class="assignment-meta"><span>Due: ${new Date(a.dueDate).toLocaleDateString()}</span><span>${days} days left</span><span>${a.reminder ? 'Reminder set' : 'No reminder'}</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px;align-items:flex-end">
+            <span class="badge ${badgeClass}">${badgeText}</span>
+            <div class="assignment-actions">
+              <button class="small" onclick="editAssignment(${a.id})">Edit</button>
+              <button class="btn" onclick="completeAssignment(${a.id})">Done</button>
+              <button class="small" onclick="deleteAssignment(${a.id})">Delete</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function deleteAssignment(id){assignments = assignments.filter(a=>a.id!==id);saveAssignments();displayAssignments();showToast('Assignment deleted')}
+    function editAssignment(id){
+      const a = assignments.find(item=>item.id===id);
+      if(!a) return;
+      const newName = prompt('Edit assignment name:', a.name);
+      const newDate = prompt('Edit due date (YYYY-MM-DD):', a.dueDate);
+      const newReminder = confirm('Set reminder? ' + (a.reminder ? '(Currently yes)' : '(Currently no)'));
+      if(newName && newDate){
+        a.name = newName;
+        a.dueDate = newDate;
+        a.reminder = newReminder;
+        saveAssignments();
+        displayAssignments();
+        showToast('Assignment updated');
+      }
+    }
+    function completeAssignment(id){
+      const a = assignments.find(item=>item.id===id);
+      if(a){a.completed = true;saveAssignments();displayAssignments();showToast('Assignment completed')}
+    }
+
+    document.getElementById('assignment-form').addEventListener('submit', e=>{
+      e.preventDefault();
+      const name = document.getElementById('assignment-name').value.trim();
+      const due = document.getElementById('due-date').value;
+      const reminder = document.getElementById('set-reminder').checked;
+      if(!name || !due){showToast('Fill in the assignment name and due date');return}
+      assignments.push({id:Date.now(),userId:currentUser.id,name,dueDate:due,reminder,completed:false,notified:false});
+      saveAssignments();
+      displayAssignments();
+      e.target.reset();
+      showToast('Assignment added');
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', ()=>{
+      currentUser = null;
+      saveCurrentUser();
+      location.href = 'auth.html';
+    });
+
+    displayAssignments();
+  </script>
+</body>
+</html>
